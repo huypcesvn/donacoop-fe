@@ -1,11 +1,10 @@
-import { Button } from '@/components/ui/button';
+import Navigation from '@/components/navbar/Navigation';
 import React from 'react'
 
 const HomePage = () => {
   return (
     <div>
-      <h1 className='font-sans font-bold text-indigo-600'>Hello world!</h1>
-      <Button variant={'primary'}>Click here</Button>
+      <Navigation />
     </div>
   );
 }
