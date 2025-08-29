@@ -1,25 +1,22 @@
 'use client';
 
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import ThemeToggle from './ThemeToggle';
 import { Button } from '../ui/button';
 import { Menu } from 'lucide-react';
 import { navItems } from '@/lib/constants';
 import Link from 'next/link';
 import { useState } from 'react';
-import AuthDialog from '../auth/AuthDialog';
+import UserSection from './UserSection';
 
 const MobileNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className='md:hidden flex items-center space-x-4'>
       <ThemeToggle />
-      <AuthDialog />
+
+      <UserSection variant='mobile' />
+
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
           <Button variant='ghost' size='icon'>

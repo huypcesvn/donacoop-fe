@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
+import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/context/AuthContext";
 
 const inter    = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const playfair = Inter({ subsets: ["latin"], variable: "--font-playfair" });
@@ -21,7 +23,8 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${playfair.variable} antialiased`}
       >
-        <ThemeProvider
+        <AuthProvider>
+          <ThemeProvider
             attribute="class"
             defaultTheme="light"
             enableSystem
@@ -29,6 +32,8 @@ export default function RootLayout({
           >
           {children}
         </ThemeProvider>
+        </AuthProvider>
+        <Toaster />
       </body>
     </html>
   );

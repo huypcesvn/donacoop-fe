@@ -7,9 +7,63 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { PasswordInput } from './PasswordInput';
-import { X } from 'lucide-react';
+import { X, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
+import { useAuth } from '@/context/AuthContext';
 
 const AuthDialog = () => {
+  const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL
+  const { login } = useAuth();
+  const [loading, setLoading] = React.useState(false);
+  const [loginPhoneNumber, setLoginPhoneNumber] = React.useState('');
+  const [loginPassword, setLoginPassword] = React.useState('');
+  const [registerName, setRegisterName] = React.useState('');
+  const [registerPhoneNumber, setRegisterPhoneNumber] = React.useState('');
+  const [registerPassword, setRegisterPassword] = React.useState('');
+
+  const handleLogin = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: loginPhoneNumber, password: loginPassword }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Login failed');
+
+      login(data.userInfo, data.access_token);
+      toast(`Welcome ${data.userInfo.name}`);
+    } catch (err) {
+      toast(err instanceof Error ? err.message : 'Login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegister = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fullName: registerName, username: registerPhoneNumber, password: registerPassword }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message || 'Register failed');
+
+      toast('Register success');
+      return data;
+    } catch (err) {
+      console.error('Register error:', err);
+      toast(err instanceof Error ? err.message : 'Register error');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -32,34 +86,40 @@ const AuthDialog = () => {
             <TabsTrigger value='register' className='cursor-pointer'>Sign Up</TabsTrigger>
           </TabsList>
 
-          {/* Form Đăng nhập */}
+          {/* Form Login */}
           <TabsContent value='login' className='space-y-4 mt-4'>
             <div className='gap-2 grid'>
-              <Label htmlFor='login-email'>Email</Label>
-              <Input id='login-email' type='email' placeholder='you@example.com' />
+              <Label htmlFor='login-phonenumber'>Phone number</Label>
+              <Input id='login-phonenumber' type='text' placeholder='09xxxxxxxx' value={loginPhoneNumber} onChange={e => setLoginPhoneNumber(e.target.value)} />
             </div>
             <div className='gap-2 grid'>
               <Label htmlFor='login-password'>Password</Label>
-              <PasswordInput id='login-password' placeholder='********' />
+              <PasswordInput id='login-password' placeholder='********' value={loginPassword} onChange={e => setLoginPassword(e.target.value)} />
             </div>
-            <Button variant={'primary'} className='w-full cursor-pointer'>Login</Button>
+            <Button variant='primary' className='w-full cursor-pointer' onClick={handleLogin} disabled={loading}>
+              {loading ? <Loader2 className='mr-2 size-4 animate-spin' /> : null}
+              Login
+            </Button>
           </TabsContent>
 
-          {/* Form Đăng ký */}
+          {/* Form Register */}
           <TabsContent value='register' className='space-y-4 mt-4'>
             <div className='gap-2 grid'>
               <Label htmlFor='register-name'>Your name</Label>
-              <Input id='register-name' placeholder='Enter your name' />
+              <Input id='register-name' placeholder='Enter your name' value={registerName} onChange={e => setRegisterName(e.target.value)} />
             </div>
             <div className='gap-2 grid'>
-              <Label htmlFor='register-email'>Email</Label>
-              <Input id='register-email' type='email' placeholder='you@example.com' />
+              <Label htmlFor='register-phonenumber'>Phone number</Label>
+              <Input id='register-phonenumber' type='text' placeholder='09xxxxxxxx' value={registerPhoneNumber} onChange={e => setRegisterPhoneNumber(e.target.value)} />
             </div>
             <div className='gap-2 grid'>
               <Label htmlFor='register-password'>Password</Label>
-              <PasswordInput id='register-password' placeholder='********' />
+              <PasswordInput id='register-password' placeholder='********' value={registerPassword} onChange={e => setRegisterPassword(e.target.value)} />
             </div>
-            <Button variant={'primary'} className='w-full cursor-pointer'>Sign Up</Button>
+            <Button variant='primary' className='w-full cursor-pointer' onClick={handleRegister} disabled={loading}>
+              {loading ? <Loader2 className='mr-2 size-4 animate-spin' /> : null}
+              Sign Up
+            </Button>
           </TabsContent>
         </Tabs>
       </AlertDialogContent>
