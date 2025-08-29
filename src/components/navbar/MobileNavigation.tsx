@@ -12,12 +12,14 @@ import { Menu } from 'lucide-react';
 import { navItems } from '@/lib/constants';
 import Link from 'next/link';
 import { useState } from 'react';
+import AuthDialog from '../auth/AuthDialog';
 
 const MobileNavigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   return (
     <div className='md:hidden flex items-center space-x-4'>
       <ThemeToggle />
+      <AuthDialog />
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
         <SheetTrigger asChild>
           <Button variant='ghost' size='icon'>

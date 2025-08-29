@@ -2,6 +2,7 @@ import { navItems } from '@/lib/constants';
 import Link from 'next/link';
 import ThemeToggle from './ThemeToggle';
 import MobileNavigation from './MobileNavigation';
+import AuthDialog from '../auth/AuthDialog';
 
 const Navigation = () => {
   return (
@@ -28,6 +29,9 @@ const Navigation = () => {
             ))}
 
             <ThemeToggle />
+
+            {/* Register / Login */}
+            <AuthDialog />
           </div>
 
           <MobileNavigation />
