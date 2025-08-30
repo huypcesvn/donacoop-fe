@@ -1,11 +1,11 @@
 'use client'
 
 import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/ui/button';
-import { LogOut, Shield } from 'lucide-react';
+import { Shield } from 'lucide-react';
+import LogoutHandler from '@/components/auth/LogoutHandler';
 
 const AdminNavigation = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
   return (
     <nav className='top-0 z-50 sticky bg-gray-900 border-b border-gray-700'>
@@ -19,22 +19,23 @@ const AdminNavigation = () => {
             </h1>
           </div>
 
-          {/* User section */}
-          <div className='flex items-center gap-4'>
-            <div className='text-right hidden md:block'>
-              <p className='text-sm font-medium text-white'>{user?.name}</p>
-              <p className='text-xs text-gray-400'>Administrator</p>
+          {/* User section - only show if user is logged in and is admin */}
+          {user && user.roles && user.roles.includes('Admin') ? (
+            <div className='flex items-center gap-4'>
+              <div className='text-right hidden md:block'>
+                <p className='text-sm font-medium text-white'>{user.name}</p>
+                <p className='text-xs text-gray-400'>Administrator</p>
+              </div>
+              <LogoutHandler />
             </div>
-            <Button 
-              variant='ghost' 
-              size='sm' 
-              onClick={logout} 
-              className='flex items-center gap-2 text-gray-300 hover:text-white hover:bg-gray-800'
-            >
-              <LogOut className='h-4 w-4' />
-              <span className='hidden md:inline'>Logout</span>
-            </Button>
-          </div>
+          ) : (
+            <div className='flex items-center gap-4'>
+              <div className='text-right hidden md:block'>
+                <p className='text-sm font-medium text-white'>Admin Panel</p>
+                <p className='text-xs text-gray-400'>Please login</p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </nav>

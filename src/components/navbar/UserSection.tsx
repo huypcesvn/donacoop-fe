@@ -2,14 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { Button } from '../ui/button';
-import { LogOut } from 'lucide-react';
 import AuthDialog from '../auth/AuthDialog';
+import LogoutHandler from '../auth/LogoutHandler';
 
 interface Props { variant?: 'desktop' | 'mobile' }
 
 const UserSection = ({ variant = 'desktop' }: Props) => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -29,9 +28,7 @@ const UserSection = ({ variant = 'desktop' }: Props) => {
   if (variant === 'desktop') return (
     <div className='flex items-center gap-4'>
       <span className='font-bold'>{user.name}</span>
-      <Button variant='ghost' size='sm' onClick={logout} className='flex items-center space-x-1 cursor-pointer'>
-        <LogOut className='size-4' /> Logout
-      </Button>
+      <LogoutHandler />
     </div>
   );
 
@@ -39,9 +36,7 @@ const UserSection = ({ variant = 'desktop' }: Props) => {
   return (
     <div className='flex items-center gap-2'>
       <span className='font-semibold text-sm'>{user.name}</span>
-      <Button variant='ghost' size='icon' onClick={logout} className='cursor-pointer'>
-        <LogOut className='size-4' />
-      </Button>
+      <LogoutHandler />
     </div>
   );
 }
