@@ -10,10 +10,12 @@ import { PasswordInput } from './PasswordInput';
 import { X, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 const AuthDialog = () => {
   const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL
   const { login } = useAuth();
+  const router = useRouter();
   const [loading, setLoading] = React.useState(false);
   const [loginPhoneNumber, setLoginPhoneNumber] = React.useState('');
   const [loginPassword, setLoginPassword] = React.useState('');
@@ -27,6 +29,7 @@ const AuthDialog = () => {
       const res = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // Important: needed to receive cookies
         body: JSON.stringify({ username: loginPhoneNumber, password: loginPassword }),
       });
       const data = await res.json();
@@ -34,6 +37,11 @@ const AuthDialog = () => {
 
       login(data.userInfo, data.access_token);
       toast(`Welcome ${data.userInfo.name}`);
+      
+      // Redirect admin users to admin page
+      if (data.userInfo.roles && data.userInfo.roles.includes('Admin')) {
+        router.push('/admin');
+      }
     } catch (err) {
       toast(err instanceof Error ? err.message : 'Login failed');
     } finally {
