@@ -8,14 +8,14 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className='min-h-screen bg-gray-50'>
+    <div className='bg-gray-50 min-h-screen'>
       <AdminNavigation />
       <div className='flex'>
         {/* Sidebar */}
-        <aside className='bg-white border-r border-gray-200 p-4 w-64 min-h-screen shadow-sm'>
+        <aside className='bg-white shadow-sm p-4 border-gray-200 border-r w-64 min-h-screen'>
           <div className='mb-6'>
-            <h2 className='text-lg font-semibold text-gray-900 flex items-center gap-2'>
-              <Shield className='h-5 w-5 text-blue-600' />
+            <h2 className='flex items-center gap-2 font-semibold text-gray-900 text-lg'>
+              <Shield className='w-5 h-5 text-blue-600' />
               Admin Panel
             </h2>
           </div>
@@ -24,36 +24,36 @@ export default function AdminLayout({
               <li>
                 <Link 
                   href='/admin' 
-                  className='flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors'
+                  className='flex items-center gap-3 hover:bg-blue-50 px-3 py-2 rounded-md font-medium text-gray-700 hover:text-blue-600 text-sm transition-colors'
                 >
-                  <Home className='h-4 w-4' />
+                  <Home className='w-4 h-4' />
                   Dashboard
                 </Link>
               </li>
               <li>
                 <Link 
-                  href='/admin/users' 
-                  className='flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors'
+                  href='/admin/employees' 
+                  className='flex items-center gap-3 hover:bg-blue-50 px-3 py-2 rounded-md font-medium text-gray-700 hover:text-blue-600 text-sm transition-colors'
                 >
-                  <Users className='h-4 w-4' />
-                  Users Management
+                  <Users className='w-4 h-4' />
+                  Employee Management
                 </Link>
               </li>
               <li>
                 <Link 
                   href='/admin/permissions' 
-                  className='flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors'
+                  className='flex items-center gap-3 hover:bg-blue-50 px-3 py-2 rounded-md font-medium text-gray-700 hover:text-blue-600 text-sm transition-colors'
                 >
-                  <Key className='h-4 w-4' />
+                  <Key className='w-4 h-4' />
                   Permissions
                 </Link>
               </li>
               <li>
                 <Link 
                   href='/admin/system' 
-                  className='flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors'
+                  className='flex items-center gap-3 hover:bg-blue-50 px-3 py-2 rounded-md font-medium text-gray-700 hover:text-blue-600 text-sm transition-colors'
                 >
-                  <Settings className='h-4 w-4' />
+                  <Settings className='w-4 h-4' />
                   System Settings
                 </Link>
               </li>
