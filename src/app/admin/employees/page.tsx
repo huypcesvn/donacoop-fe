@@ -4,33 +4,46 @@ import React, { useEffect, useState } from 'react';
 import AdminEmployeesTable from './AdminEmployeesTable';
 import AddEditEmployeeDialog from './AddEditEmployeeDialog';
 import { toast } from 'sonner';
+import PaginationWrapper from '@/components/PaginationWrapper';
 
 export default function AdminEmployeesPage() {
   const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const [users, setUsers] = useState<any[]>([]);
 
-  const fetchUsers = async () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(10);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+
+  const fetchUsers = async (page: number = 1, limit: number = 10) => {
     try {
-      const res = await fetch(`${API_URL}/users`, { credentials: 'include' });
-      const data = await res.json();
-      setUsers(data.map((u: any) => ({
-        id: u.id,
-        fullName: u.fullName,
-        username: u.username,
-        email: u.personalEmail ?? '-',
-        currentJob: u.currentJob ?? '-',
-        address: u.address ?? '-',
-        city: u.city ?? '-',
-        role: u.roles?.[0]?.name ?? '-'
-      })));
+      const res = await fetch(`${API_URL}/users?page=${page}&limit=${limit}`, { credentials: 'include' });
+      const { data, total, page: resPage, limit: resLimit, totalPages } = await res.json();
+      setUsers(
+        data.map((u: any) => ({
+          id: u.id,
+          fullName: u.fullName,
+          username: u.username,
+          email: u.personalEmail ?? '-',
+          currentJob: u.currentJob ?? '-',
+          address: u.address ?? '-',
+          city: u.city ?? '-',
+          role: u.roles?.[0]?.name ?? '-',
+        }))
+      );
+      setTotalItems(total);
+      setCurrentPage(resPage);
+      setLimit(resLimit);
+      setTotalPages(totalPages);
     } catch (err) {
       console.error(err);
+      toast('Failed to fetch users.');
     }
   };
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    fetchUsers(currentPage, limit);
+  }, [currentPage, limit]);
 
   const handleAdd = async (user: any) => {
     try {
@@ -54,7 +67,7 @@ export default function AdminEmployeesPage() {
         return false;
       }
       toast(`User [${user.username}] created successfully.`);
-      await fetchUsers();
+      await fetchUsers(currentPage, limit);
       return true;
     } catch (err) {
       console.error(err);
@@ -82,19 +95,18 @@ export default function AdminEmployeesPage() {
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        const message =
-          errorData.message || errorData.error || 'Failed to update user.';
+        const message = errorData.message || errorData.error || 'Failed to update user.';
         toast(message);
-        return false; // thất bại
+        return false;
       }
 
       toast(`User [${user.username}] updated successfully.`);
-      await fetchUsers();
-      return true; // thành công
+      await fetchUsers(currentPage, limit);
+      return true;
     } catch (err) {
       console.error(err);
       toast('Unexpected error occurred.');
-      return false; // thất bại
+      return false;
     }
   };
 
@@ -109,7 +121,12 @@ export default function AdminEmployeesPage() {
         throw new Error('Failed to delete user.');
       }
       toast(`Deleted successfully.`);
-      await fetchUsers();
+      // Nếu trang hiện tại không còn dữ liệu sau khi xóa, chuyển về trang trước
+      if (users.length === 1 && currentPage > 1) {
+        setCurrentPage(currentPage - 1);
+      } else {
+        await fetchUsers(currentPage, limit);
+      }
     } catch (err) {
       console.error(err);
     }
@@ -122,6 +139,14 @@ export default function AdminEmployeesPage() {
         <AddEditEmployeeDialog mode='add' onSave={handleAdd} />
       </div>
       <AdminEmployeesTable users={users} onEdit={handleEdit} onDelete={handleDelete} />
+      <PaginationWrapper
+        currentPage={currentPage}
+        totalPages={totalPages}
+        totalItems={totalItems}
+        limit={limit}
+        onPageChange={setCurrentPage}
+        itemName='employees'
+      />
     </div>
   );
 }
