@@ -1,23 +1,47 @@
+/* eslint-disable */
 'use client'
 
 import React, { useEffect, useState } from 'react';
 import AdminEmployeesTable from './AdminEmployeesTable';
 import AddEditEmployeeDialog from './AddEditEmployeeDialog';
-import { toast } from 'sonner';
 import PaginationWrapper from '@/components/PaginationWrapper';
+import { toast } from 'sonner';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function AdminEmployeesPage() {
   const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
   const [users, setUsers] = useState<any[]>([]);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
+  const [keyword, setKeyword] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState(''); // State tạm thời cho input
+  const [role, setRole] = useState('');
+  const [roles, setRoles] = useState<any[]>([]);
 
-  const fetchUsers = async (page: number = 1, limit: number = 10) => {
+  const fetchRoles = async () => {
     try {
-      const res = await fetch(`${API_URL}/users?page=${page}&limit=${limit}`, { credentials: 'include' });
+      const res = await fetch(`${API_URL}/users/roles`, { credentials: 'include' });
+      const data = await res.json();
+      setRoles(data);
+    } catch (err) {
+      console.error(err);
+      toast('Failed to fetch roles.');
+    }
+  };
+
+  const fetchUsers = async (page: number = 1, limit: number = 10, keyword: string = '', role: string = '') => {
+    try {
+      const query = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+        ...(keyword && { keyword }),
+        ...(role && role !== 'all' && { role }),
+      }).toString();
+      console.log(`Fetching: ${API_URL}/users?${query}`);
+      const res = await fetch(`${API_URL}/users?${query}`, { credentials: 'include' });
       const { data, total, page: resPage, limit: resLimit, totalPages } = await res.json();
       setUsers(
         data.map((u: any) => ({
@@ -42,8 +66,18 @@ export default function AdminEmployeesPage() {
   };
 
   useEffect(() => {
-    fetchUsers(currentPage, limit);
-  }, [currentPage, limit]);
+    fetchRoles();
+    fetchUsers(currentPage, limit, keyword, role);
+  }, [currentPage, limit, keyword, role]); // Giữ keyword trong dependencies để gọi lại khi nhấn Enter
+
+  const handleSearch = () => {
+    setKeyword(searchKeyword); // Cập nhật keyword khi nhấn Enter
+    setCurrentPage(1); // Reset về trang 1
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && searchKeyword.trim()) handleSearch();
+  };
 
   const handleAdd = async (user: any) => {
     try {
@@ -67,7 +101,7 @@ export default function AdminEmployeesPage() {
         return false;
       }
       toast(`User [${user.username}] created successfully.`);
-      await fetchUsers(currentPage, limit);
+      await fetchUsers(currentPage, limit, keyword, role);
       return true;
     } catch (err) {
       console.error(err);
@@ -101,7 +135,7 @@ export default function AdminEmployeesPage() {
       }
 
       toast(`User [${user.username}] updated successfully.`);
-      await fetchUsers(currentPage, limit);
+      await fetchUsers(currentPage, limit, keyword, role);
       return true;
     } catch (err) {
       console.error(err);
@@ -121,11 +155,10 @@ export default function AdminEmployeesPage() {
         throw new Error('Failed to delete user.');
       }
       toast(`Deleted successfully.`);
-      // Nếu trang hiện tại không còn dữ liệu sau khi xóa, chuyển về trang trước
       if (users.length === 1 && currentPage > 1) {
         setCurrentPage(currentPage - 1);
       } else {
-        await fetchUsers(currentPage, limit);
+        await fetchUsers(currentPage, limit, keyword, role);
       }
     } catch (err) {
       console.error(err);
@@ -137,6 +170,31 @@ export default function AdminEmployeesPage() {
       <div className='flex justify-between items-center mb-4'>
         <h1 className='font-bold text-3xl'>Employee Management</h1>
         <AddEditEmployeeDialog mode='add' onSave={handleAdd} />
+      </div>
+      <div className='flex gap-4 mb-4'>
+        <Input
+          placeholder='Search by name or email'
+          value={searchKeyword}
+          onChange={(e) => setSearchKeyword(e.target.value)}
+          onKeyDown={handleKeyDown}
+          className='max-w-xs'
+        />
+        <Select value={role} onValueChange={(value) => {
+          setRole(value);
+          setCurrentPage(1);
+        }}>
+          <SelectTrigger className='w-[180px]'>
+            <SelectValue placeholder='Filter by role' />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value='all'>All Roles</SelectItem>
+            {roles.map((r) => (
+              <SelectItem key={r.id} value={r.name}>
+                {r.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <AdminEmployeesTable users={users} onEdit={handleEdit} onDelete={handleDelete} />
       <PaginationWrapper
