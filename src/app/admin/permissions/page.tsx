@@ -9,17 +9,6 @@ export default function AdminPermissionsPage() {
   const { isAdmin } = useAuth();
   const [selectedRole, setSelectedRole] = useState('Admin');
 
-  if (!isAdmin()) {
-    return (
-      <div className="flex items-center justify-center min-h-screen p-6">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h1>
-          <p className="text-gray-600">You don&apos;t have permission to access this page.</p>
-        </div>
-      </div>
-    );
-  }
-
   // Based on seed data
   const roles = [
     'Admin',
@@ -82,16 +71,16 @@ export default function AdminPermissionsPage() {
   return (
     <div className="p-6">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Permissions Management</h1>
+        <h1 className="mb-2 font-bold text-gray-900 text-3xl">Permissions Management</h1>
         <p className="text-gray-600">Manage role-based permissions and access control</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="gap-6 grid grid-cols-1 lg:grid-cols-4">
         {/* Role Selection */}
         <div className="lg:col-span-1">
-          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <Users className="h-5 w-5 text-blue-600" />
+          <div className="bg-white shadow-sm p-6 border border-gray-200 rounded-lg">
+            <h3 className="flex items-center gap-2 mb-4 font-semibold text-gray-900 text-lg">
+              <Users className="w-5 h-5 text-blue-600" />
               Roles
             </h3>
             <div className="space-y-2">
@@ -106,7 +95,7 @@ export default function AdminPermissionsPage() {
                   }`}
                 >
                   <div className="flex items-center gap-2">
-                    <Shield className="h-4 w-4" />
+                    <Shield className="w-4 h-4" />
                     {role}
                   </div>
                 </button>
@@ -117,13 +106,13 @@ export default function AdminPermissionsPage() {
 
         {/* Permissions */}
         <div className="lg:col-span-3">
-          <div className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+          <div className="bg-white shadow-sm p-6 border border-gray-200 rounded-lg">
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <Key className="h-5 w-5 text-green-600" />
+              <h3 className="flex items-center gap-2 font-semibold text-gray-900 text-lg">
+                <Key className="w-5 h-5 text-green-600" />
                 Permissions for {selectedRole}
               </h3>
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="mt-1 text-gray-600 text-sm">
                 {rolePermissions.length} of {permissions.length} permissions assigned
               </p>
             </div>
@@ -131,10 +120,10 @@ export default function AdminPermissionsPage() {
             <div className="space-y-6">
               {Object.entries(groupedPermissions).map(([category, perms]) => (
                 <div key={category}>
-                  <h4 className="text-md font-medium text-gray-800 mb-3 border-b border-gray-200 pb-2">
+                  <h4 className="mb-3 pb-2 border-gray-200 border-b font-medium text-gray-800 text-md">
                     {category}
                   </h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="gap-3 grid grid-cols-1 md:grid-cols-2">
                     {perms.map((permission) => {
                       const hasPermission = rolePermissions.includes(permission.name);
                       return (
@@ -148,15 +137,15 @@ export default function AdminPermissionsPage() {
                         >
                           <div className="flex items-center gap-3">
                             {hasPermission ? (
-                              <Check className="h-4 w-4 text-green-600" />
+                              <Check className="w-4 h-4 text-green-600" />
                             ) : (
-                              <X className="h-4 w-4 text-gray-400" />
+                              <X className="w-4 h-4 text-gray-400" />
                             )}
                             <div>
-                              <p className="text-sm font-medium text-gray-900">
+                              <p className="font-medium text-gray-900 text-sm">
                                 {permission.label}
                               </p>
-                              <p className="text-xs text-gray-500">
+                              <p className="text-gray-500 text-xs">
                                 {permission.name}
                               </p>
                             </div>
@@ -178,13 +167,13 @@ export default function AdminPermissionsPage() {
               ))}
             </div>
 
-            <div className="mt-8 pt-6 border-t border-gray-200">
+            <div className="mt-8 pt-6 border-gray-200 border-t">
               <div className="flex justify-between items-center">
                 <div>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-gray-600 text-sm">
                     Total permissions: <span className="font-medium">{permissions.length}</span>
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-gray-600 text-sm">
                     Granted to {selectedRole}: <span className="font-medium text-green-600">{rolePermissions.length}</span>
                   </p>
                 </div>

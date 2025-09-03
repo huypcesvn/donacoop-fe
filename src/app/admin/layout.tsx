@@ -16,7 +16,7 @@ export default function AdminLayout({
           <div className='mb-6'>
             <h2 className='flex items-center gap-2 font-semibold text-gray-900 text-lg'>
               <Shield className='w-5 h-5 text-blue-600' />
-              Admin Panel
+              Bashboard
             </h2>
           </div>
           <nav>
@@ -36,7 +36,7 @@ export default function AdminLayout({
                   className='flex items-center gap-3 hover:bg-blue-50 px-3 py-2 rounded-md font-medium text-gray-700 hover:text-blue-600 text-sm transition-colors'
                 >
                   <Users className='w-4 h-4' />
-                  Employee Management
+                  Employees
                 </Link>
               </li>
               <li>

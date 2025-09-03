@@ -40,12 +40,6 @@ export default function AdminLoginPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || 'Login failed');
 
-      // Check if user is admin
-      if (!data.userInfo.roles || !data.userInfo.roles.includes('Admin')) {
-        toast.error('Access denied. Admin privileges required.');
-        return;
-      }
-
       login(data.userInfo, data.access_token);
       toast.success(`Welcome ${data.userInfo.name}`);
       router.push('/admin');
@@ -57,24 +51,24 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="flex justify-center items-center bg-gray-50 px-4 sm:px-6 lg:px-8 py-12 min-h-screen">
+      <div className="space-y-8 w-full max-w-md">
         <div>
-          <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-blue-100">
-            <Shield className="h-6 w-6 text-blue-600" />
+          <div className="flex justify-center items-center bg-blue-100 mx-auto rounded-full w-12 h-12">
+            <Shield className="w-6 h-6 text-blue-600" />
           </div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+          <h2 className="mt-6 font-extrabold text-gray-900 text-3xl text-center">
             Admin Access
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Sign in to access the admin panel
+          <p className="mt-2 text-gray-600 text-sm text-center">
+            Sign in to access the Dashboard
           </p>
         </div>
         
-        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+        <form className="space-y-6 mt-8" onSubmit={handleLogin}>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="username" className="block text-sm font-medium text-gray-700">
+              <Label htmlFor="username" className="block font-medium text-gray-700 text-sm">
                 Username
               </Label>
               <Input
@@ -90,7 +84,7 @@ export default function AdminLoginPage() {
             </div>
             
             <div>
-              <Label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <Label htmlFor="password" className="block font-medium text-gray-700 text-sm">
                 Password
               </Label>
               <PasswordInput
@@ -109,13 +103,9 @@ export default function AdminLoginPage() {
             <Button
               type="submit"
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              className="group relative flex justify-center bg-blue-600 hover:bg-blue-700 disabled:opacity-50 px-4 py-2 border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 w-full font-medium text-white text-sm"
             >
-              {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                'Sign in to Admin Panel'
-              )}
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Sign in to Dashboard'}
             </Button>
           </div>
         </form>
