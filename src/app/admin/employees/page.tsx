@@ -23,9 +23,9 @@ export default function AdminEmployeesPage() {
 
   const fetchRoles = async () => {
     try {
-      const res = await fetch(`${API_URL}/users/roles`, { credentials: 'include' });
+      const res = await fetch(`${API_URL}/roles`, { credentials: 'include' });
       const data = await res.json();
-      setRoles(data);
+      if (Array.isArray(data) && data.length > 0) setRoles(data);
     } catch (err) {
       console.error(err);
       toast('Failed to fetch roles.');
@@ -67,6 +67,9 @@ export default function AdminEmployeesPage() {
 
   useEffect(() => {
     fetchRoles();
+  }, []);
+
+  useEffect(() => {
     fetchUsers(currentPage, limit, keyword, role);
   }, [currentPage, limit, keyword, role]); // Giữ keyword trong dependencies để gọi lại khi nhấn Enter
 
