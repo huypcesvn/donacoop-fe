@@ -32,6 +32,15 @@ export default function AdminLayout({
               </li>
               <li>
                 <Link 
+                  href='/admin/companies' 
+                  className='flex items-center gap-3 hover:bg-blue-50 px-3 py-2 rounded-md font-medium text-gray-700 hover:text-blue-600 text-sm transition-colors'
+                >
+                  <Users className='w-4 h-4' />
+                  Companies
+                </Link>
+              </li>
+              <li>
+                <Link 
                   href='/admin/employees' 
                   className='flex items-center gap-3 hover:bg-blue-50 px-3 py-2 rounded-md font-medium text-gray-700 hover:text-blue-600 text-sm transition-colors'
                 >
