@@ -33,5 +33,3 @@ export default function DeleteCompanyAlertDialog({ companyName, onConfirm, child
     </AlertDialog>
   );
 }
-
-

@@ -78,7 +78,7 @@ export default function AdminCompaniesTable({ companies, onEdit, onDelete }: Adm
                     postalCode?: string;
                     type?: string;
                   }) => {
-                    return await onEdit({ ...c, ...updated });
+                    return await onEdit({ id: c.id, ...updated });
                   }}
                 >
                   <Button size='sm' variant='outline' className='flex justify-center items-center p-0 size-8'>
@@ -103,5 +103,3 @@ export default function AdminCompaniesTable({ companies, onEdit, onDelete }: Adm
     </Table>
   );
 }
-
-

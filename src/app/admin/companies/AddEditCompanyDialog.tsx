@@ -66,7 +66,7 @@ export default function AddEditCompanyDialog({ mode, initialData, onSave, childr
         <AlertDialogHeader>
           <AlertDialogTitle>{mode === 'add' ? 'Add Company' : 'Edit Company'}</AlertDialogTitle>
         </AlertDialogHeader>
-        <div className='grid grid-cols-1 gap-3 mt-4'>
+        <div className='gap-3 grid grid-cols-1 mt-4'>
           <Input placeholder='Name' value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
           <Input placeholder='Email' value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
           <Input placeholder='Phone' value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
@@ -90,5 +90,3 @@ export default function AddEditCompanyDialog({ mode, initialData, onSave, childr
     </AlertDialog>
   );
 }
-
-
